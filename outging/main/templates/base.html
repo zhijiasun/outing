@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block css %}
+        <link rel="stylesheet" href="/static/DataTables-1.9.4/media/css/demo_table.css" /> 
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+        <style type="text/css">
+        .bb{
+            content: "";   
+            line-height: 0;
+        }
+
+        .row:before, .row:after {       
+            content: "";   
+            line-height: 0;
+        }
+        </style>
+    {% endblock %}
+    {% block javascript %}
+        <script src="/static/js/bootstrap.min.js"></script> 
+        <script type="text/javascript" language="javascript" src="/static/DataTables-1.9.4/media/js/jquery.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function(){   
+            $('#example').dataTable();      
+        });
+        </script>   
+    {% endblock %}
+    <title> {% block title %} index page{% endblock %}</title>
+</head>
+<body>
+    {% block header %}
+    {% endblock %}
+    {% block content %}
+        <h1>base page</h1>
+    {% endblock %}
+</body>
+</html>

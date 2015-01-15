@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/datepicker.css" />
+{% endblock %}
+{% block javascript %}
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-datepicker.js"></script>
+{% endblock %}
+{% block content%}
+        <div class="container">
+            {% include "header.html" %}
+            <div class="row">
+                <div class="span8 offset2">
+                    <form class="form-horizontal" action="" method="POST">
+                        {% csrf_token %}
+                        <div class="control-group">
+                            <label class="control-label" for="inputDate">充值时间</label>
+                            <div class="controls">
+                                <input type="text" id="inputDate" placeholder="Date" name="activity_date">
+                            </div>
+                        </div>
+                        <div class="control-group"> 
+                            <label class="control-label" for="selectUser">项目组</label>
+                            <div class="controls">          
+                                <select id="selectUser" name="selectUser">
+                                    <option value="{{ u.user_table_id }}">TEAM1</option>
+                                    <option value="{{ u.user_table_id }}">TEAM2</option>
+                                    <option value="{{ u.user_table_id }}">TEAM3</option>
+                                    <option value="{{ u.user_table_id }}">TEAM4</option>
+                                    <option value="{{ u.user_table_id }}">TEAM5</option>
+                                    <option value="{{ u.user_table_id }}">TEAM6</option>
+                                    <option value="{{ u.user_table_id }}">TEAM7</option>
+                                    <option value="{{ u.user_table_id }}">TEAM8</option>
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="control-group">
+                            <label class="control-label" for="inputComments">金额</label>
+                            <div class="controls">
+                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn">发布</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('#inputDate').datepicker({format: 'yyyy-mm-dd'});
+        </script>
+{% endblock %}
