@@ -13,33 +13,34 @@
             {% include "header.html" %}
             <div class="row">
                 <div class="span8 offset2">
-                    <form class="form-horizontal" action="" method="POST">
+                    <form class="form-horizontal" action="/add_charge" method="POST">
                         {% csrf_token %}
                         <div class="control-group">
                             <label class="control-label" for="inputDate">充值时间</label>
                             <div class="controls">
-                                <input type="text" id="inputDate" placeholder="Date" name="activity_date">
+                                <input type="text" id="inputDate" placeholder="Date" name="charge_date">
                             </div>
                         </div>
                         <div class="control-group"> 
-                            <label class="control-label" for="selectUser">项目组</label>
+                            <label class="control-label" for="selectTeam">组别</label>
                             <div class="controls">          
-                                <select id="selectUser" name="selectUser">
-                                    <option value="{{ u.user_table_id }}">TEAM1</option>
-                                    <option value="{{ u.user_table_id }}">TEAM2</option>
-                                    <option value="{{ u.user_table_id }}">TEAM3</option>
-                                    <option value="{{ u.user_table_id }}">TEAM4</option>
-                                    <option value="{{ u.user_table_id }}">TEAM5</option>
-                                    <option value="{{ u.user_table_id }}">TEAM6</option>
-                                    <option value="{{ u.user_table_id }}">TEAM7</option>
-                                    <option value="{{ u.user_table_id }}">TEAM8</option>
+                                <select id="selectTeam" name="selectTeam">
+                                    {% for team in object_list %}
+                                    <option value="{{ team.team_name }}">{{ team.team_name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div> 
                         <div class="control-group">
-                            <label class="control-label" for="inputComments">金额</label>
+                            <label class="control-label" for="inputFormal">正式员工</label>
                             <div class="controls">
-                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                                <input type="text" id="inputFormal" placeholder="" name="formal_number">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputIntern">实习生</label>
+                            <div class="controls">
+                                <input type="text" id="inputIntern" placeholder="" name="intern_number">
                             </div>
                         </div>
                         <div class="control-group">

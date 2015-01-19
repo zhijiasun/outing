@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url('^activity$', ActivityView.as_view()),
     url('^ratio$', RatioView.as_view()),
     url('^change$', ChangeView.as_view()),
-    url('^add$', AddActivityView.as_view()),
+    url('^add$', 'main.views.add'),
+    url('^add_charge$', 'main.views.add_charge'),
     url('^charge$', ChargeView.as_view()),
 )

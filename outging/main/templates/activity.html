@@ -13,7 +13,7 @@
             {% include "header.html" %}
             <div class="row">
                 <div class="span8 offset2">
-                    <form class="form-horizontal" action="" method="POST">
+                    <form class="form-horizontal" action="/add" method="POST">
                         {% csrf_token %}
                         <div class="control-group">
                             <label class="control-label" for="inputDate">活动时间</label>
@@ -22,14 +22,12 @@
                             </div>
                         </div>
                         <div class="control-group"> 
-                            <label class="control-label" for="selectUser">活动类别</label>
+                            <label class="control-label" for="selectActivity">活动类别</label>
                             <div class="controls">          
-                                <select id="selectUser" name="selectUser">
-                                    <option value="{{ u.user_table_id }}">A</option>
-                                    <option value="{{ u.user_table_id }}">B</option>
-                                    <option value="{{ u.user_table_id }}">C</option>
-                                    <option value="{{ u.user_table_id }}">D</option>
-                                    <option value="{{ u.user_table_id }}">E</option>
+                                <select id="selectActivity" name="selectActivity">
+                                    {% for activity in object_list %}
+                                    <option value="{{ activity.activity_name }}">{{ activity.activity_name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div> 
@@ -40,31 +38,26 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label" for="inputComments">金额</label>
+                            <label class="control-label" for="money">金额</label>
                             <div class="controls">
-                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                                <input type="text" id="money" placeholder="" name="money">
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label" for="inputComments">活动人数</label>
+                            <label class="control-label" for="MemberNumber">活动人数</label>
                             <div class="controls">
-                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                                <input type="text" id="MemberNumber" placeholder="" name="MemberNumber">
                             </div>
                         </div>
                         <div class="control-group"> 
-                            <label class="control-label" for="selectUser">选择组别</label>
+                            <label class="control-label" for="selectSubTeam">项目组</label>
                             <div class="controls">          
-                                <select id="selectUser" name="selectUser">
-                                    <option value="{{ u.user_table_id }}">ISAMV1</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV2</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV3</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV4</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV5</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV6</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV7</option>
-                                    <option value="{{ u.user_table_id }}">ISAMV8</option>
+                                <select id="selectSubTeam" name="selectSubTeam">
+                                    {% for team in teams %}
+                                    <option value="{{ team.subteam_name }}">{{ team.subteam_name }}</option>
+                                    {% endfor %}
                                 </select>
-                                </div>
+                            </div>
                         </div> 
                         <div class="control-group">
                             <div class="controls">

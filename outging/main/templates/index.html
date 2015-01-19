@@ -11,47 +11,29 @@
                 {% csrf_token %}
                 <thead>
                     <tr>
-                        <td>日期</td>
-                        <td>活动</td>
+                        <td>维护日期</td>
+                        <td>活动日期</td>
+                        <td>活动类别</td>
                         <td>备注</td>
                         <td>金额</td>
                         <td>人数</td>
                         <td>组别</td>
+                        <td>项目组</td>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for activity in object_list %}
                     <tr>
-                    	<td>2014-09-01</td>
-                        <td>吃饭</td>
-                    	<td>在阳光西餐厅吃饭</td>
-                        <td>800</td>
-                    	<td>20</td>
-                        <td>ISAMV1</td>
+                        <td>{{ activity.maint_time }}</td>
+                        <td>{{ activity.activity_time }}</td>
+                        <td>{{ activity.activity_type.activity_name }}</td>
+                        <td>{{ activity.comment }}</td>
+                        <td>{{ activity.money }}</td>
+                        <td>{{ activity.member_number }}</td>
+                        <td>{{ activity.team.team_name }}</td>
+                        <td>{{ activity.sub_team.subteam_name }}</td>
                     </tr> 
-                    <tr>
-                    	<td>2014-09-01</td>
-                        <td>吃饭</td>
-                    	<td>在阳光西餐厅吃饭</td>
-                        <td>800</td>
-                    	<td>20</td>
-                        <td>ISAMV1</td>
-                    </tr> 
-                    <tr>
-                    	<td>2014-09-01</td>
-                        <td>吃饭</td>
-                    	<td>在阳光西餐厅吃饭</td>
-                        <td>800</td>
-                    	<td>20</td>
-                        <td>ISAMV1</td>
-                    </tr> 
-                    <tr>
-                    	<td>2014-09-01</td>
-                        <td>吃饭</td>
-                    	<td>在阳光西餐厅吃饭</td>
-                        <td>800</td>
-                    	<td>20</td>
-                        <td>ISAMV1</td>
-                    </tr> 
+                    {% endfor %}
                     <!-- {% for key,value in activity_users_dict.items %} -->
                     <!-- <tr> -->
                     <!-- 	<td>{{ key.date|date:"Y-m-d" }}</td> -->
