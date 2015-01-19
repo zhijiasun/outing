@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/datepicker.css" />
+{% endblock %}
+{% block javascript %}
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-datepicker.js"></script>
+{% endblock %}
+{% block content%}
+        <div class="container">
+            {% include "header.html" %}
+            <div class="row">
+                <div class="span8 offset2">
+                    <form class="form-horizontal" action="" method="POST">
+                        {% csrf_token %}
+                        <div class="control-group">
+                            <label class="control-label" for="inputComments">项目组</label>
+                            <div class="controls">
+                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputComments">组别</label>
+                            <div class="controls">
+                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputComments">Team Leader</label>
+                            <div class="controls">
+                                <input type="text" id="inputComments" placeholder="" name="activity_comments">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn">发布</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('#inputDate').datepicker({format: 'yyyy-mm-dd'});
+        </script>
+{% endblock %}
