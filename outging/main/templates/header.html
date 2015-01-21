@@ -17,9 +17,11 @@
                         <!-- <li> -->
                         <!--     <a href="add">增减活动类别</a> <span class="divider">/</span> -->
                         <!-- </li> -->
+                        {% if user.is_staff %}
                         <li>
                             <a href="charge">充值</a> <span class="divider">/</span>
                         </li>
+                        {% endif %}
                         <li>
                         <a href="">Hello, {{ user.username }}</a> <span class="divider">/</span>
                         </li>
