@@ -118,16 +118,23 @@ class IndexView(ListView):
         return super(IndexView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        hr = Hr.objects.filter(user=self.request.user)[0]
-        team = hr.team
-        queryset = Activity.objects.filter(team=team)
-        return queryset
+        if self.request.user.is_staff:
+            queryset = Activity.objects.all()
+            return queryset
+        else:
+            hr = Hr.objects.filter(user=self.request.user)[0]
+            team = hr.team
+            queryset = Activity.objects.filter(team=team)
+            return queryset
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        temp_context = calculateMoney(self.request.user)
-        context.update(temp_context)
-        return context
+        if self.request.user.is_staff:
+            return context
+        else:
+            temp_context = calculateMoney(self.request.user)
+            context.update(temp_context)
+            return context
 
 
 class SelectTeamView(ListView):
@@ -140,13 +147,16 @@ class ActivityView(ListView):
     model = ActivityRatio
 
     def get_context_data(self, **kwargs):
-        hr = Hr.objects.get(user=self.request.user)
-        team = hr.team
-        context = super(ActivityView, self).get_context_data(**kwargs)
-        context['teams'] = SubTeam.objects.filter(team=team)
-        temp_context = calculateMoney(self.request.user)
-        context.update(temp_context)
-        return context
+        if self.request.user.is_staff:
+            return context
+        else:
+            hr = Hr.objects.get(user=self.request.user)
+            team = hr.team
+            context = super(ActivityView, self).get_context_data(**kwargs)
+            context['teams'] = SubTeam.objects.filter(team=team)
+            temp_context = calculateMoney(self.request.user)
+            context.update(temp_context)
+            return context
 
 
 def add(request):

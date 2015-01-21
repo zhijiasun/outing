@@ -68,9 +68,11 @@
                 </div>
             </div>
         </div>
+        {% if not user.is_staff %}
         <div class="container">
             {% include "footer.html" %}
         </div>
+        {% endif %}
 
         <script type="text/javascript">
             $('#inputDate').datepicker({format: 'yyyy-mm-dd'});

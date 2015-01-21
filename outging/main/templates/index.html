@@ -34,30 +34,13 @@
                         <td>{{ activity.sub_team.subteam_name }}</td>
                     </tr> 
                     {% endfor %}
-                    <!-- {% for key,value in activity_users_dict.items %} -->
-                    <!-- <tr> -->
-                    <!-- 	<td>{{ key.date|date:"Y-m-d" }}</td> -->
-                    <!--     <td>{{ key.location }} </td> -->
-                    <!-- 	<td>{{ key.cost }}</td> -->
-                    <!--     <td> -->
-                    <!--         {% for users in value %} -->
-                    <!--             {% if forloop.first %} -->
-                    <!--                 {{ users.cost }} -->
-                    <!--             {% endif %} -->
-                    <!--         {% endfor %} -->
-                    <!--     </td> -->
-                    <!-- 	<td> -->
-                    <!--         {% for users in value %} -->
-                    <!--             {{ users.user_id.username }}, -->
-                    <!--         {% endfor %} -->
-                    <!--     </td> -->
-                    <!-- </tr> --> 
-                    <!-- {% endfor %} -->
                 </tbody>
             </table>
          </div>
     </div>
+    {% if not user.is_staff %}
     <div class="container">
     {% include "footer.html" %}
     </div>
+    {% endif %}
 {% endblock %}
