@@ -1,0 +1,19 @@
+            <div class="bb footer" >
+                
+                <div>
+                    <ul class="breadcrumb">
+                        <li>
+                        <a href="">总余额:{{ sum }}</a> <span class="divider">/</span>
+                        </li>
+                        {% for key,value in balance.items %}
+                        <li>
+                        <a href="logout">{{ key.activity_name }}:{{ value }}</a> <span class="divider">/</span>
+                        </li>
+
+                        {% endfor %}
+                        <!-- <li> -->
+                        <!--     <a href="logout">注销</a> <span class="divider">/</span> -->
+                        <!-- </li> -->
+                    </ul>
+                </div>
+            </div>

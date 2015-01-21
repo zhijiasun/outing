@@ -61,12 +61,27 @@ class Activity(models.Model):
         verbose_name_plural = verbose_name = u'活动维护'
 
 
+class ChargeRecord(models.Model):
+    charge_date = models.DateField(u'充值时间')
+    charge_money = models.FloatField(u'金额')
+    team = models.ForeignKey(Team, verbose_name=u'组别')
+    activity = models.ForeignKey(ActivityRatio, verbose_name=u'活动')
+
+
 class Charge(models.Model):
     charge_date = models.DateField(u'充值时间')
     charge_money = models.FloatField(u'金额')
     team = models.ForeignKey(Team, verbose_name=u'组别')
     formal_number = models.IntegerField(u'正式员工')
     intern_number = models.IntegerField(u'实习生')
+
+    def save(self, *args, **kwargs):
+        for activity in ActivityRatio.objects.all():
+            record = ChargeRecord(charge_date=self.charge_date,charge_money=activity.ratio*0.01*self.charge_money, team=self.team, activity=activity)
+            record.save()
+        super(Charge, self).save(*args, **kwargs)
+
+
 
 
 # class ActivityType(models.Model):
