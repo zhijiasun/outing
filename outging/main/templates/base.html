@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     {% block css %}
-        <link rel="stylesheet" href="/static/DataTables-1.9.4/media/css/demo_table.css" /> 
+        <link rel="stylesheet" href="/static/DataTables-1.10.4/media/css/jquery.dataTables.min.css" /> 
         <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/static/DataTables-1.10.4/extensions/TableTools/css/dataTables.tableTools.min.css"/>
         <style type="text/css">
         .bb{
             content: "";   
@@ -22,12 +23,37 @@
     {% endblock %}
     {% block javascript %}
         <script src="/static/js/bootstrap.min.js"></script> 
-        <script type="text/javascript" language="javascript" src="/static/DataTables-1.9.4/media/js/jquery.js"></script>
-        <script type="text/javascript" language="javascript" src="/static/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/DataTables-1.10.4/media/js/jquery.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/DataTables-1.10.4/media/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/static/DataTables-1.10.4/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
         <script type="text/javascript">
-        $(document).ready(function(){   
-            $('#example').dataTable();      
-        });
+        <!-- $(document).ready(function(){ -->   
+        <!--     $('#example').dataTable(); -->      
+        <!-- }); -->
+        <!-- $(document).ready( function () { -->
+        <!--         $('#example').dataTable( { -->
+        <!--             "bPaginate": true, //翻页功能 -->
+        <!--             "bLengthChange": true, //改变每页显示数据数量 -->
+        <!--             "bFilter": true, //过滤功能 -->
+        <!--             "bSort": true, //排序功能 -->
+        <!--             "bInfo": true, //页脚信息 -->
+        <!--             "bAutoWidth": true, //自动宽度 -->
+        <!--             "sDom": 'T<"clear">lfrtip', -->
+        <!--             "oTableTools": { -->
+        <!--             "sSwfPath": "/swf/copy_csv_xls_pdf.swf" -->
+        <!--             } -->
+        <!--             } ); -->
+        <!--         } ); -->
+        $(document).ready( function () {
+                $('#example').dataTable( {
+                    "dom": 'T<"clear">lfrtip',
+                    "tableTools": {
+                        "sSwfPath": "/static/DataTables-1.10.4/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                        "aButtons":[{"sExtends": "xls","oSelectorOpts": { filter: 'applied'}}]
+                    }
+                    } );
+                } );
+
         </script>   
     {% endblock %}
     <title> {% block title %} index page{% endblock %}</title>
