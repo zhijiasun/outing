@@ -64,6 +64,11 @@
                                 <button type="submit" class="btn">发布</button>
                             </div>
                         </div>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                        {% endif %}
                     </form>
                 </div>
             </div>

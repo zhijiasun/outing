@@ -14,13 +14,25 @@
             <div class="row">
                 <div class="span8 offset2">
                     <form class="form-horizontal" action="/add_charge" method="POST">
-                        {% csrf_token %}
-                        <div class="control-group">
-                            <label class="control-label" for="inputDate">充值时间</label>
-                            <div class="controls">
-                                <input type="text" id="inputDate" placeholder="Date" name="charge_date">
+                        <div class="control-group"> 
+                            <label class="control-label" for="selectMonth">经费月份</label>
+                            <div class="controls">          
+                                <select id="selectMonth" name="Month">
+                                    <option value="1">一月</option>
+                                    <option value="2">二月</option>
+                                    <option value="3">三月</option>
+                                    <option value="4">四月</option>
+                                    <option value="5">五月</option>
+                                    <option value="6">六月</option>
+                                    <option value="7">七月</option>
+                                    <option value="8">八月</option>
+                                    <option value="9">九月</option>
+                                    <option value="10">十月</option>
+                                    <option value="11">十一月</option>
+                                    <option value="12">十二月</option>
+                                </select>
                             </div>
-                        </div>
+                        </div> 
                         <div class="control-group"> 
                             <label class="control-label" for="selectTeam">组别</label>
                             <div class="controls">          
@@ -48,6 +60,12 @@
                                 <button type="submit" class="btn">发布</button>
                             </div>
                         </div>
+                        {% csrf_token %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                        {% endif %}
                     </form>
                 </div>
             </div>

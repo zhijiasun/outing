@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/datepicker.css" />
+{% endblock %}
+{% block javascript %}
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-datepicker.js"></script>
+{% endblock %}
+{% block content%}
+        <div class="container">
+            {% include "header.html" %}
+            <div class="row">
+                <div class="span8 offset2">
+                    <form class="form-horizontal" action="/add_charge" method="POST">
+                        {% csrf_token %}
+                        <!-- <div class="control-group"> -->
+                        <!--     <label class="control-label" for="inputDate">充值时间</label> -->
+                        <!--     <div class="controls"> -->
+                        <!--         <input type="text" id="inputDate" placeholder="Date" name="charge_date"> -->
+                        <!--     </div> -->
+                        <!-- </div> -->
+                        <div class="control-group"> 
+                            <label class="control-label" for="selectTeam">组别</label>
+                            <div class="controls">          
+                                <select id="selectTeam" name="selectTeam">
+                                    {% for team in object_list %}
+                                    <option value="{{ team.team_name }}">{{ team.team_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="control-group"> 
+                            <label class="control-label" for="selectActivity">活动类别</label>
+                            <div class="controls">          
+                                <select id="selectActivity" name="selectActivity">
+                                    {% for activity in object_list %}
+                                    <option value="{{ activity.activity_name }}">{{ activity.activity_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="control-group">
+                            <label class="control-label" for="inputMoney">金额</label>
+                            <div class="controls">
+                                <input type="text" id="inputMoney" placeholder="" name="money">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputComment">备注</label>
+                            <div class="controls">
+                                <input type="text" id="inputComment" placeholder="" name="comment">
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn">发布</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('#inputDate').datepicker({format: 'yyyy-mm-dd'});
+        </script>
+{% endblock %}

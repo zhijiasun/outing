@@ -9,14 +9,44 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.http import Http404
 from models import *
 from datetime import date
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
 
 # class LoginView(TemplateView):
 #     template_name = 'login.html'
+
+FORMAL_AMOUNT = 75
+INTERN_AMOUNT = 45
+
+for ratio in AdjustRatio.objects.all():
+    if ratio.name is 1:
+        FORMAL_AMOUNT = ratio.amount
+    elif ratio.name is 2:
+        INTERN_AMOUNT = ratio.amount
+
+
+"""
+no need to judge "-123" and "0123"
+for "-123", "-123".isdigit() will return False
+for "0123", "0123".isdigit() return True, but int("0123") will return integer 123
+"""
+def IsInteger(str):
+    if str and str.isdigit() and str[0] is not '0':
+        return True
+    else:
+        return False
+
+def IsIntegerOrFloat(str):
+    if str and str.count(".") is 1 and IsInteger(str.replace(".","")):
+        return True
+    else:
+        return False
 
 
 def dologin(request):
@@ -48,8 +78,22 @@ def register(request):
     print '###'
     if request.method == 'POST':
         username = request.POST['username']
+        if not username:
+            messages.add_message(request, messages.ERROR, '请输入注册用户名')
+            context = RequestContext(request)
+            return render_to_response("register.html", context) 
         email = request.POST['email']
+        if not email:
+            messages.add_message(request, messages.ERROR, '请输入注册邮箱')
+            context = RequestContext(request)
+            return render_to_response("register.html", context) 
+
         password = request.POST['pwd']
+        if not password:
+            messages.add_message(request, messages.ERROR, '请输入密码')
+            context = RequestContext(request)
+            return render_to_response("register.html", context) 
+
         re_password = request.POST['re_pwd']
 
         if re_password != password:
@@ -74,9 +118,12 @@ def addteam(request):
         print request.POST['selectTeam']
         team = Team.objects.filter(team_name=request.POST['selectTeam'])[0]
 
-        hr = Hr(user=user, team=team)
-        hr.save()
-        return HttpResponseRedirect("/index") 
+        if Hr.objects.filter(user=user):
+            return HttpResponseRedirect("/index")
+        else:
+            hr = Hr(user=user, team=team)
+            hr.save()
+            return HttpResponseRedirect("/index") 
 
 
 def calculateMoney(user):
@@ -109,6 +156,11 @@ def calculateMoney(user):
     return context
 
 
+class AdjustView(ListView):
+    template_name = 'adjust.html'
+    model = ActivityRatio
+
+
 class IndexView(ListView):
     template_name = 'index.html'
     model = Activity
@@ -122,8 +174,13 @@ class IndexView(ListView):
             queryset = Activity.objects.all()
             return queryset
         else:
-            hr = Hr.objects.filter(user=self.request.user)[0]
+            try:
+                hr = Hr.objects.get(user=self.request.user)
+            except Hr.DoesNotExist:
+                logger.error('for user:%s,related Hr not existed' % self.request.user.username)
+                raise Http404 # not a proper way to return 404 page
             team = hr.team
+            logger.info('team is %s' % team.team_name)
             queryset = Activity.objects.filter(team=team)
             return queryset
 
@@ -148,6 +205,7 @@ class ActivityView(ListView):
 
     def get_context_data(self, **kwargs):
         if self.request.user.is_staff:
+            context = super(ActivityView, self).get_context_data(**kwargs)
             return context
         else:
             hr = Hr.objects.get(user=self.request.user)
@@ -158,7 +216,7 @@ class ActivityView(ListView):
             context.update(temp_context)
             return context
 
-
+#添加活动消费
 def add(request):
     print request.POST
     if 'activity_date' in request.POST:
@@ -176,11 +234,16 @@ def add(request):
     if 'money' in request.POST:
         money = request.POST['money']
 
-    activity = Activity(activity_time=activity_date, member_number=member_number, maint_time=date.today(),  
+    if activity_date and activity_type and subteam and sub_team and IsInteger(member_number) and IsIntegerOrFloat(money):
+        logger.debug("activity_date:%s,sub_team is:%s,member_number is:%s,money is:%s" % (activity_date,subteam,member_number,money))
+        activity = Activity(activity_time=activity_date, member_number=member_number, maint_time=date.today(),  
             activity_type=activity_type, money=money, comment=comment, sub_team=sub_team, team=sub_team.team)
-    activity.save()
-    return HttpResponseRedirect("/index") 
-    # return render_to_response('/index', context_instance=RequestContext(request))
+        activity.save()
+        return HttpResponseRedirect("/index") 
+    else:
+        logger.error("input data error")
+        messages.add_message(request, messages.ERROR, "请输入正确数据")
+        return HttpResponseRedirect("/activity") 
 
 
 class RatioView(ListView):
@@ -201,11 +264,48 @@ class ChargeView(ListView):
     model = Team
 
 
+class ChargeHistoryView(ListView):
+    template_name = 'history.html'
+    model = Charge
+
+
+class BalanceHistoryView(TemplateView):
+    template_name = 'balance_history.html'
+
+    def get_context_data(self, **kwargs):
+        consume = 0
+        charge = 0
+        balance = {}
+        context = {}
+        amount = []
+
+        context = super(BalanceHistoryView, self).get_context_data(**kwargs)
+        for team in Team.objects.all():
+            temp = [team]
+            for a in ActivityRatio.objects.all():
+                balance[a] = 0
+
+            activity = Activity.objects.filter(team=team)
+            for a in activity:
+                consume = consume + a.money 
+                balance[a.activity_type] = balance[a.activity_type] - a.money
+
+            record = ChargeRecord.objects.filter(team=team)
+            for r in record:
+                charge = charge + r.charge_money
+                balance[r.activity] = balance[r.activity] + r.charge_money
+
+            temp = temp + balance.values()
+            print 'aaaaaaaa'
+            print temp
+            amount.append(temp)
+
+        context['amount']=amount
+        return context
 
 def add_charge(request):
-    print request.POST
-    if 'charge_date' in request.POST:
-        date = request.POST['charge_date']
+    if 'Month' in request.POST:
+        month = request.POST['Month']
     if 'selectTeam' in request.POST:
         selectTeam = request.POST['selectTeam']
         team = Team.objects.filter(team_name=selectTeam)[0]
@@ -214,10 +314,13 @@ def add_charge(request):
     if 'intern_number' in request.POST:
         intern_number = request.POST['intern_number']
 
-    charge_money = int(formal_number) * 75 + int(intern_number) * 45
-    print 'charge_money is:', charge_money
-    charge = Charge(charge_date=date, charge_money=charge_money, team=team, formal_number=formal_number,intern_number=intern_number)
-    charge.save()
-    print 'done'
-    return HttpResponseRedirect("/index") 
-
+    if month and team and IsInteger(formal_number) and IsInteger(intern_number):
+        logger.debug('formal_amount is %d , intern_amout is:%d' % (FORMAL_AMOUNT, INTERN_AMOUNT))
+        charge_money = int(formal_number) * FORMAL_AMOUNT + int(intern_number) * INTERN_AMOUNT
+        logger.debug('charge_money is:%d' % charge_money)
+        charge = Charge(month=month, charge_money=charge_money, team=team, formal_number=formal_number,intern_number=intern_number)
+        charge.save()
+        return HttpResponseRedirect("/history") 
+    else:
+        messages.add_message(request, messages.ERROR, '请输入正确数据')
+        return HttpResponseRedirect("/charge") 

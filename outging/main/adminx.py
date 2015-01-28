@@ -23,8 +23,18 @@ class ActivityRatioAdmin(object):
     list_display = ('activity_name', 'ratio')
 
 
+class HrAdmin(object):
+    list_display = ('user', 'team')
+
+
+class AdjustRatioAdmin(object):
+    list_display = ('name', 'amount')
+
+
+site.register(Hr, HrAdmin)
 site.register(Team, TeamAdmin)
 site.register(SubTeam, SubTeamAdmin)
 site.register(Activity, ActivityAdmin)
 # site.register(ActivityType, ActivityTypeAdmin)
 site.register(ActivityRatio, ActivityRatioAdmin)
+site.register(AdjustRatio, AdjustRatioAdmin)
