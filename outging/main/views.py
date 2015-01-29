@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import Http404
+from django.core.context_processors import csrf
 from models import *
 from datetime import date
 import logging
@@ -62,8 +63,10 @@ def dologin(request):
             context = RequestContext(request)
             return render_to_response("login.html", context) 
     else:
+        c = {}
+        c.update(csrf(request))
         context = RequestContext(request)
-        return render_to_response("login.html", context) 
+        return render_to_response("login.html", c, context) 
 
 
 
