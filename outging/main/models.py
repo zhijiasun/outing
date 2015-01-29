@@ -77,7 +77,7 @@ class ChargeRecord(models.Model):
     charge_money = models.FloatField(u'金额')
     team = models.ForeignKey(Team, verbose_name=u'组别')
     activity = models.ForeignKey(ActivityRatio, verbose_name=u'活动')
-    comment = models.CharField(u'备注', max_length=80)
+    comment = models.CharField(u'备注', max_length=200, blank=True, null=True)
 
 
 class Charge(models.Model):

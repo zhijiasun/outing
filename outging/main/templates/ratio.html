@@ -22,6 +22,7 @@
                             <tr>
                                 <th>活动名称</th>
                                 <th>费用比例</th>
+                                <th>活动说明</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,6 +30,7 @@
                             <tr> 
                                 <td>{{ activity.activity_name }}</td>
                                 <td>{{ activity.ratio }}</td>
+                                <td>{{ activity.comment }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

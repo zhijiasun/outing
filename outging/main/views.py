@@ -43,7 +43,9 @@ def IsInteger(str):
         return False
 
 def IsIntegerOrFloat(str):
-    if str and str.count(".") is 1 and IsInteger(str.replace(".","")):
+    if str and IsInteger(str):
+        return True
+    elif str and str.count(".") is 1 and IsInteger(str.replace(".","")):
         return True
     else:
         return False
@@ -75,7 +77,6 @@ def dologout(request):
 
 
 def register(request):
-    print '###'
     if request.method == 'POST':
         username = request.POST['username']
         if not username:
@@ -107,7 +108,6 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect("/selectteam") 
     else:
-        print '>>>>'
         context = RequestContext(request)
         return render_to_response('register.html', context)
 
@@ -156,9 +156,62 @@ def calculateMoney(user):
     return context
 
 
-class AdjustView(ListView):
-    template_name = 'adjust.html'
-    model = ActivityRatio
+# class AdjustView(ListView):
+#     template_name = 'adjust.html'
+#     model = ActivityRatio
+
+#     def get_context_data(self, **kwargs):
+#         context = super(AdjustView, self).get_context_data(**kwargs)
+#         teams = Team.objects.all()
+#         context['teams'] = teams
+#         return context
+
+
+@login_required
+def adjust(request):
+    if request.method == 'POST':
+        selectTeam = request.POST.get('selectTeam', '')
+        if selectTeam:
+            try:
+                team = Team.objects.get(team_name = selectTeam)
+            except Team.DoesNotExist:
+                logger.error('selectTeam:%s not existed.' % selectTeam)
+                messages.add_message(request, messages.ERROR, "selectTeam not existed")
+                return HttpResponseRedirect("/adjust") 
+        else:
+            logger.error('selectTeam is null')
+            messages.add_message(request, messages.ERROR, "请输入正确数据")
+            return HttpResponseRedirect("/adjust") 
+
+        selectActivity = request.POST.get('selectActivity', '')
+        if selectActivity:
+            try:
+                activity = ActivityRatio.objects.get(activity_name=selectActivity)
+            except ActivityRatio.DoesNotExist:
+                logger.error('selectActivity:%s not existed.' % selectActivity)
+                messages.add_message(request, messages.ERROR, "selectTeam not existed")
+                return HttpResponseRedirect("/adjust") 
+        else:
+            logger.error('selectActivity is null')
+            messages.add_message(request, messages.ERROR, "请输入正确数据")
+            return HttpResponseRedirect("/adjust") 
+
+        money = request.POST.get('money', '')
+        if not money and not IsIntegerOrFloat:
+            logger.error('money is null')
+            messages.add_message(request, messages.ERROR, "请输入正确数据")
+            return HttpResponseRedirect("/adjust") 
+
+        comment = request.POST.get('comment', '')
+
+        record = ChargeRecord(charge_money=money, team=team, activity=activity, comment=comment)
+        record.save()
+        return HttpResponseRedirect("/balance") 
+    else:
+        logger.debug('GET request for /adjust')
+        c = {'object_list':ActivityRatio.objects.all(), 'teams':Team.objects.all()}
+        context = RequestContext(request, c)
+        return render_to_response("adjust.html", context) 
 
 
 class IndexView(ListView):
@@ -250,27 +303,51 @@ class RatioView(ListView):
     template_name = 'ratio.html'
     model = ActivityRatio
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(RatioView, self).dispatch(*args, **kwargs)
+
 
 class ChangeView(TemplateView):
     template_name = 'change.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ChagenView, self).dispatch(*args, **kwargs)
 
 
 class AddActivityView(TemplateView):
     template_name = 'add_activity.html'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(AddActivityView, self).dispatch(*args, **kwargs)
 
-class ChargeView(ListView):
-    template_name = 'charge.html'
-    model = Team
+
+# class ChargeView(ListView):
+#     template_name = 'charge.html'
+#     model = Team
+
+#     @method_decorator(login_required)
+#     def dispatch(self, *args, **kwargs):
+#         return super(ChargeView, self).dispatch(*args, **kwargs)
 
 
 class ChargeHistoryView(ListView):
     template_name = 'history.html'
     model = Charge
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ChargeHistoryView, self).dispatch(*args, **kwargs)
+
 
 class BalanceHistoryView(TemplateView):
     template_name = 'balance_history.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(BalanceHistoryView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         consume = 0
@@ -296,31 +373,42 @@ class BalanceHistoryView(TemplateView):
                 balance[r.activity] = balance[r.activity] + r.charge_money
 
             temp = temp + balance.values()
-            print 'aaaaaaaa'
-            print temp
             amount.append(temp)
 
         context['amount']=amount
         return context
 
-def add_charge(request):
-    if 'Month' in request.POST:
-        month = request.POST['Month']
-    if 'selectTeam' in request.POST:
-        selectTeam = request.POST['selectTeam']
-        team = Team.objects.filter(team_name=selectTeam)[0]
-    if 'formal_number' in request.POST:
-        formal_number = request.POST['formal_number']
-    if 'intern_number' in request.POST:
-        intern_number = request.POST['intern_number']
 
-    if month and team and IsInteger(formal_number) and IsInteger(intern_number):
-        logger.debug('formal_amount is %d , intern_amout is:%d' % (FORMAL_AMOUNT, INTERN_AMOUNT))
-        charge_money = int(formal_number) * FORMAL_AMOUNT + int(intern_number) * INTERN_AMOUNT
-        logger.debug('charge_money is:%d' % charge_money)
-        charge = Charge(month=month, charge_money=charge_money, team=team, formal_number=formal_number,intern_number=intern_number)
-        charge.save()
-        return HttpResponseRedirect("/history") 
+@login_required
+def charge(request):
+    print 'fadsfad'
+    if request.method == 'POST':
+        print 'fadsfad'
+        if 'Month' in request.POST:
+            month = request.POST['Month']
+        if 'selectTeam' in request.POST:
+            selectTeam = request.POST['selectTeam']
+            team = Team.objects.filter(team_name=selectTeam)[0]
+        if 'formal_number' in request.POST:
+            formal_number = request.POST['formal_number']
+        if 'intern_number' in request.POST:
+            intern_number = request.POST['intern_number']
+
+        if month and team and IsInteger(formal_number) and IsInteger(intern_number):
+            logger.debug('formal_amount is %d , intern_amout is:%d' % (FORMAL_AMOUNT, INTERN_AMOUNT))
+            charge_money = int(formal_number) * FORMAL_AMOUNT + int(intern_number) * INTERN_AMOUNT
+            logger.debug('charge_money is:%d' % charge_money)
+            try:
+                charge = Charge(month=month, charge_money=charge_money, team=team, formal_number=formal_number,intern_number=intern_number)
+                charge.save()
+            except Exception, e:
+                logger.error(e)
+            return HttpResponseRedirect("/history") 
+        else:
+            messages.add_message(request, messages.ERROR, '请输入正确数据')
+            return HttpResponseRedirect("/charge") 
     else:
-        messages.add_message(request, messages.ERROR, '请输入正确数据')
-        return HttpResponseRedirect("/charge") 
+        logger.debug('GET request for /charge')
+        c = {'object_list':Team.objects.all()}
+        context = RequestContext(request, c)
+        return render_to_response("charge.html", context) 

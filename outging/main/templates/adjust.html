@@ -13,19 +13,13 @@
             {% include "header.html" %}
             <div class="row">
                 <div class="span8 offset2">
-                    <form class="form-horizontal" action="/add_charge" method="POST">
+                    <form class="form-horizontal" action="/adjust" method="POST">
                         {% csrf_token %}
-                        <!-- <div class="control-group"> -->
-                        <!--     <label class="control-label" for="inputDate">充值时间</label> -->
-                        <!--     <div class="controls"> -->
-                        <!--         <input type="text" id="inputDate" placeholder="Date" name="charge_date"> -->
-                        <!--     </div> -->
-                        <!-- </div> -->
                         <div class="control-group"> 
                             <label class="control-label" for="selectTeam">组别</label>
                             <div class="controls">          
                                 <select id="selectTeam" name="selectTeam">
-                                    {% for team in object_list %}
+                                    {% for team in teams %}
                                     <option value="{{ team.team_name }}">{{ team.team_name }}</option>
                                     {% endfor %}
                                 </select>

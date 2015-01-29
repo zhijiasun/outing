@@ -20,7 +20,7 @@ class ActivityAdmin(object):
 
 
 class ActivityRatioAdmin(object):
-    list_display = ('activity_name', 'ratio')
+    list_display = ('activity_name', 'ratio', 'comment')
 
 
 class HrAdmin(object):
