@@ -15,6 +15,7 @@ import django.utils.log
 import logging.handlers
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, "../static").replace('\\', '/')
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'iejzv!wodu^ui)!@hp3s*goyxk(8x=hg3fpzl-z@@4ue)9s2w='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
